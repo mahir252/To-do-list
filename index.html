@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>To-Do List · Pro</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: #f2f6fc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background: #1a1f2b;
+    }
+
+    .app-container {
+      max-width: 480px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 36px;
+      box-shadow: 0 20px 50px rgba(0, 20, 30, 0.12);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode .app-container {
+      background: #252b3a;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .page {
+      display: none;
+      flex-direction: column;
+      padding: 24px 20px 30px;
+      height: 100%;
+      min-height: 580px;
+      background: white;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .page {
+      background: #252b3a;
+      color: #e8edf5;
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eef3f8;
+      transition: border-color 0.3s ease;
+    }
+
+    body.dark-mode .page-header {
+      border-bottom-color: #3a4358;
+    }
+
+    .page-header h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #132a3b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .page-header h2 {
+      color: #e8edf5;
+    }
+
+    .page-header h2 i {
+      color: #2a7faa;
+      font-size: 1.4rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #2b4b62;
+      padding: 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+    }
+
+    body.dark-mode .icon-btn {
+      color: #b0c4db;
+    }
+
+    .icon-btn:hover {
+      background: #e8f0f7;
+    }
+
+    body.dark-mode .icon-btn:hover {
+      background: #3a4358;
+    }
+
+    .dropdown-wrapper {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 52px;
+      background: white;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+      min-width: 180px;
+      padding: 8px 0;
+      z-index: 40;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    body.dark-mode .dropdown-menu {
+      background: #2f3648;
+      border-color: #3a4358;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu button {
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      color: #1f384b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    body.dark-mode .dropdown-menu button {
+      color: #d0dbea;
+    }
+
+    .dropdown-menu button i {
+      width: 20px;
+      color: #3f6d89;
+    }
+
+    body.dark-mode .dropdown-menu button i {
+      color: #7a9bb8;
+    }
+
+    .dropdown-menu button:hover {
+      background: #f1f7fc;
+    }
+
+    body.dark-mode .dropdown-menu button:hover {
+      background: #3a4358;
+    }
+
+    .task-list {
+      flex: 1;
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 10px;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+
+    .task-list li {
+      background: #fafdff;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #e8f0f7;
+      transition: 0.1s, background 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    body.dark-mode .task-list li {
+      background: #30374a;
+      border-color: #3f485e;
+    }
+
+    .task-list li:hover {
+      background: white;
+      border-color: #c8dbe9;
+    }
+
+    body.dark-mode .task-list li:hover {
+      background: #363e54;
+      border-color: #5a6680;
+    }
+
+    .task-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .task-title {
+      font-weight: 500;
+      color: #142b3b;
+      font-size: 1rem;
+      word-break: break-word;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .task-title {
+      color: #e8edf5;
+    }
+
+    .task-meta {
+      font-size: 0.75rem;
+      color: #5b7d94;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .task-meta {
+      color: #93aec9;
+    }
+
+    .task-meta i {
+      margin-right: 3px;
+      color: #4f7b99;
+    }
+
+    body.dark-mode .task-meta i {
+      color: #7a9bb8;
+    }
+
+    .task-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-status input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1f7aad;
+      cursor: pointer;
+    }
+
+    .delete-task {
+      background: transparent;
+      border: none;
+      color: #a3bccf;
+      font-size: 1.1rem;
+      padding: 6px 8px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    body.dark-mode .delete-task {
+      color: #7a9bb8;
+    }
+
+    .delete-task:hover {
+      background: #fee9e9;
+      color: #b33a3a;
+    }
+
+    body.dark-mode .delete-task:hover {
+      background: #4a2f3a;
+      color: #e07070;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #7f9bb0;
+      padding: 40px 0;
+      font-size: 0.95rem;
+    }
+
+    body.dark-mode .empty-state {
+      color: #93aec9;
+    }
+
+    .empty-state i {
+      font-size: 2.8rem;
+      opacity: 0.3;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .fab {
+      position: sticky;
+      bottom: 10px;
+      align-self: flex-end;
+      background: #1f6390;
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 40px;
+      font-size: 2rem;
+      box-shadow: 0 10px 20px rgba(26, 80, 120, 0.25);
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .fab:hover {
+      background: #144f73;
+      transform: scale(0.96);
+    }
+
+    .add-task-page .page-header h2 i {
+      color: #2a7faa;
+    }
+
+    .add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: #1f3d54;
+      font-size: 0.95rem;
+      letter-spacing: -0.2px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .form-group label {
+      color: #c0d0e5;
+    }
+
+    .form-group input[type="text"] {
+      padding: 16px 20px;
+      border: 1px solid #d7e4ef;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+      transition: 0.15s, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      outline: none;
+      color: #142b3b;
+    }
+
+    body.dark-mode .form-group input[type="text"] {
+      background: #30374a;
+      border-color: #3f485e;
+      color: #e8edf5;
+    }
+
+    .form-group input[type="text"]:focus {
+      border-color: #2a7faa;
+      box-shadow: 0 0 0 3px rgba(42, 127, 170, 0.15);
+    }
+
+    body.dark-mode .form-group input[type="text"]:focus {
+      border-color: #4a9bc7;
+      box-shadow: 0 0 0 3px rgba(42, 127, 170, 0.25);
+    }
+
+    .time-set-btn {
+      background: #eef5fa;
+      border: 1px solid #cddce9;
+      padding: 14px 20px;
+      border-radius: 60px;
+      font-size: 1rem;
+      color: #1b3e57;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.1s, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .time-set-btn {
+      background: #30374a;
+      border-color: #3f485e;
+      color: #c0d0e5;
+    }
+
+    .time-set-btn:hover {
+      background: #e1ebf3;
+    }
+
+    body.dark-mode .time-set-btn:hover {
+      background: #3a4358;
+    }
+
+    .time-set-btn i {
+      color: #2a7faa;
+    }
+
+    body.dark-mode .time-set-btn i {
+      color: #4a9bc7;
+    }
+
+    .time-preview {
+      font-size: 0.9rem;
+      color: #2f637f;
+      font-weight: 450;
+      background: #e7f0f8;
+      padding: 8px 18px;
+      border-radius: 40px;
+      display: inline-block;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .time-preview {
+      background: #30374a;
+      color: #93aec9;
+    }
+
+    .save-task-btn {
+      background: #1f6390;
+      border: none;
+      padding: 18px;
+      border-radius: 60px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 16px;
+      box-shadow: 0 6px 14px rgba(26, 80, 120, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .save-task-btn:hover {
+      background: #144f73;
+      transform: scale(0.98);
+    }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: #1f6390;
+      font-size: 1.2rem;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .back-btn {
+      color: #4a9bc7;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 24px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      max-width: 340px;
+      width: 100%;
+      padding: 30px 24px 28px;
+      border-radius: 48px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: popIn 0.2s ease;
+      transition: background 0.3s ease;
+    }
+
+    body.dark-mode .modal-box {
+      background: #252b3a;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-box h3 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #142b3b;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .modal-box h3 {
+      color: #e8edf5;
+    }
+
+    .modal-box h3 i {
+      color: #2a7faa;
+    }
+
+    .modal-box input[type="datetime-local"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #d7e4ef;
+      border-radius: 60px;
+      font-size: 1rem;
+      background: #f8fbfe;
+      margin: 18px 0 22px;
+      outline: none;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      color: #142b3b;
+    }
+
+    body.dark-mode .modal-box input[type="datetime-local"] {
+      background: #30374a;
+      border-color: #3f485e;
+      color: #e8edf5;
+    }
+
+    .modal-box input[type="datetime-local"]:focus {
+      border-color: #1f6390;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .modal-actions button {
+      padding: 12px 28px;
+      border-radius: 60px;
+      border: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .modal-actions .btn-cancel {
+      background: #eef3f8;
+      color: #2d4d64;
+    }
+
+    body.dark-mode .modal-actions .btn-cancel {
+      background: #3a4358;
+      color: #c0d0e5;
+    }
+
+    .modal-actions .btn-ok {
+      background: #1f6390;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .modal-actions .btn-ok:hover {
+      background: #144f73;
+    }
+
+    .empty-popup-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 24px;
+    }
+
+    .empty-popup-overlay.show {
+      display: flex;
+    }
+
+    .empty-popup {
+      background: white;
+      max-width: 320px;
+      width: 100%;
+      padding: 34px 28px 30px;
+      border-radius: 48px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+      text-align: center;
+      position: relative;
+      animation: popIn 0.2s ease;
+      transition: background 0.3s ease;
+    }
+
+    body.dark-mode .empty-popup {
+      background: #252b3a;
+    }
+
+    .empty-popup .close-popup {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      color: #8aaec4;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 40px;
+      transition: 0.1s;
+    }
+
+    body.dark-mode .empty-popup .close-popup {
+      color: #7a9bb8;
+    }
+
+    .empty-popup .close-popup:hover {
+      background: #f0f6fc;
+      color: #3d637c;
+    }
+
+    body.dark-mode .empty-popup .close-popup:hover {
+      background: #3a4358;
+      color: #b0c4db;
+    }
+
+    .empty-popup i {
+      font-size: 3.2rem;
+      color: #2a7faa;
+      opacity: 0.5;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .empty-popup h3 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #1a3243;
+      margin-bottom: 6px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .empty-popup h3 {
+      color: #e8edf5;
+    }
+
+    .empty-popup p {
+      color: #5b7d94;
+      font-size: 1rem;
+      line-height: 1.5;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .empty-popup p {
+      color: #93aec9;
+    }
+
+    /* Settings page - language & theme */
+    .settings-group {
+      background: #f8fbfe;
+      border-radius: 24px;
+      padding: 18px 16px;
+      margin-bottom: 18px;
+      transition: background 0.3s ease;
+    }
+
+    body.dark-mode .settings-group {
+      background: #30374a;
+    }
+
+    .settings-group h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #2a7faa;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    body.dark-mode .settings-group h3 {
+      color: #4a9bc7;
+    }
+
+    .settings-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 6px;
+      border-bottom: 1px solid #eef3f8;
+      transition: border-color 0.3s ease;
+    }
+
+    body.dark-mode .settings-option {
+      border-bottom-color: #3a4358;
+    }
+
+    .settings-option:last-child {
+      border-bottom: none;
+    }
+
+    .settings-option label {
+      font-size: 0.95rem;
+      color: #1f3d54;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .settings-option label {
+      color: #c0d0e5;
+    }
+
+    .settings-option select {
+      padding: 6px 12px;
+      border-radius: 30px;
+      border: 1px solid #d7e4ef;
+      background: white;
+      font-size: 0.9rem;
+      color: #142b3b;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .settings-option select {
+      background: #252b3a;
+      border-color: #3f485e;
+      color: #e8edf5;
+    }
+
+    .settings-option select:focus {
+      border-color: #2a7faa;
+    }
+
+    .theme-toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-btn {
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 2px solid #d7e4ef;
+      background: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.15s;
+      color: #142b3b;
+    }
+
+    body.dark-mode .theme-btn {
+      background: #252b3a;
+      border-color: #3f485e;
+      color: #e8edf5;
+    }
+
+    .theme-btn.active {
+      border-color: #2a7faa;
+      background: #e8f0f7;
+      font-weight: 600;
+    }
+
+    body.dark-mode .theme-btn.active {
+      border-color: #4a9bc7;
+      background: #3a4358;
+    }
+
+    .theme-btn:hover {
+      border-color: #2a7faa;
+    }
+
+    .info-page {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    .info-page p {
+      color: #2c5069;
+      font-size: 1rem;
+      line-height: 1.6;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .info-page p {
+      color: #b0c4db;
+    }
+
+    .info-page i {
+      color: #2a7faa;
+      margin-right: 8px;
+    }
+
+    .back-home {
+      margin-top: 30px;
+      background: #e8f0f7;
+      border: none;
+      padding: 14px;
+      border-radius: 60px;
+      font-weight: 500;
+      color: #1a3d55;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode .back-home {
+      background: #30374a;
+      color: #c0d0e5;
+    }
+
+    .back-home:hover {
+      background: #d4e2ed;
+    }
+
+    body.dark-mode .back-home:hover {
+      background: #3a4358;
+    }
+
+    .emoji-hint {
+      font-size: 0.8rem;
+      color: #7f9bb0;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .emoji-hint {
+      color: #93aec9;
+    }
+
+    .emoji-hint i {
+      color: #2a7faa;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 420px) {
+      .app-container { border-radius: 28px; }
+      .page { padding: 18px 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+
+  <!-- ========== PAGE 1: MAIN (All Tasks) ========== -->
+  <div id="pageMain" class="page active">
+    <div class="page-header">
+      <h2><i class="fas fa-tasks"></i> <span id="mainTitle">All Tasks</span></h2>
+      <div class="header-actions">
+        <div class="dropdown-wrapper">
+          <button class="icon-btn" id="menuToggle"><i class="fas fa-ellipsis-v"></i></button>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <button id="settingsBtn"><i class="fas fa-cog"></i> <span id="menuSettings">Settings</span></button>
+            <button id="moreFeaturesBtn"><i class="fas fa-rocket"></i> <span id="menuMore">More Features</span></button>
+            <button id="aboutBtn"><i class="fas fa-info-circle"></i> <span id="menuAbout">About App</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="task-list" id="taskList"></ul>
+
+    <button class="fab" id="fabAdd"><i class="fas fa-plus"></i></button>
+  </div>
+
+  <!-- ========== PAGE 2: ADD TASK ========== -->
+  <div id="pageAdd" class="page add-task-page">
+    <div class="page-header">
+      <button class="back-btn" id="backFromAdd"><i class="fas fa-arrow-left"></i> <span id="addBack">Back</span></button>
+      <h2><i class="fas fa-plus-circle"></i> <span id="addTitle">Add Task</span></h2>
+      <div style="width:44px;"></div>
+    </div>
+
+    <div class="add-form">
+      <div class="form-group">
+        <label id="addTaskLabel">Task description</label>
+        <input type="text" id="taskInput" placeholder="Write your task ..." inputmode="text" />
+        <div class="emoji-hint">
+          <i class="fas fa-smile"></i> <span id="emojiHint">Use your keyboard's emoji key 😊</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="timeLabel">Set time & date</label>
+        <div class="time-set-btn" id="openTimePicker">
+          <span><i class="far fa-calendar-alt"></i> <span id="chooseTime">Choose time</span></span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div id="timePreview" class="time-preview"><span id="noTimeSet">No time set</span></div>
+      </div>
+
+      <button class="save-task-btn" id="saveTaskBtn"><i class="fas fa-save"></i> <span id="saveBtnText">Save task</span></button>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 3: SETTINGS ========== -->
+  <div id="pageSettings" class="page">
+    <div class="page-header">
+      <button class="back-btn" id="backFromSettings"><i class="fas fa-arrow-left"></i> <span id="settingsBack">Back</span></button>
+      <h2><i class="fas fa-cog"></i> <span id="settingsTitle">Settings</span></h2>
+      <div style="width:44px;"></div>
+    </div>
+    <div class="info-page">
+      <!-- Language Settings -->
+      <div class="settings-group">
+        <h3 id="langGroupTitle">Language</h3>
+        <div class="settings-option">
+          <label id="langLabel">Select Language</label>
+          <select id="languageSelect">
+            <option value="en">English (US)</option>
+            <option value="en-uk">English (UK)</option>
+            <option value="bn">বাংলা (Bangla)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="zh">中文 (Chinese)</option>
+            <option value="ko">한국어 (Korean)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Theme Settings -->
+      <div class="settings-group">
+        <h3 id="themeGroupTitle">Theme</h3>
+        <div class="settings-option">
+          <label id="themeLabel">Appearance</label>
+          <div class="theme-toggle-group">
+            <button class="theme-btn active" id="lightThemeBtn" data-theme="light">☀️ <span id="lightLabel">Light</span></button>
+            <button class="theme-btn" id="darkThemeBtn" data-theme="dark">🌙 <span id="darkLabel">Dark</span></button>
+          </div>
+        </div>
+      </div>
+
+      <button class="back-home" id="settingsBackHome">← <span id="settingsHomeBtn">Back to tasks</span></button>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 4: MORE FEATURES ========== -->
+  <div id="pageMore" class="page">
+    <div class="page-header">
+      <button class="back-btn" id="backFromMore"><i class="fas fa-arrow-left"></i> <span id="moreBack">Back</span></button>
+      <h2><i class="fas fa-rocket"></i> <span id="moreTitle">More</span></h2>
+      <div style="width:44px;"></div>
+    </div>
+    <div class="info-page">
+      <p><i class="fas fa-tag"></i> <span id="moreFeature1">Categories (coming soon)</span></p>
+      <p><i class="fas fa-chart-line"></i> <span id="moreFeature2">Statistics (coming soon)</span></p>
+      <p><i class="fas fa-share-alt"></i> <span id="moreFeature3">Share tasks (coming soon)</span></p>
+      <button class="back-home" id="moreBackHome">← <span id="moreHomeBtn">Back to tasks</span></button>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 5: ABOUT ========== -->
+  <div id="pageAbout" class="page">
+    <div class="page-header">
+      <button class="back-btn" id="backFromAbout"><i class="fas fa-arrow-left"></i> <span id="aboutBack">Back</span></button>
+      <h2><i class="fas fa-info-circle"></i> <span id="aboutTitle">About</span></h2>
+      <div style="width:44px;"></div>
+    </div>
+    <div class="info-page">
+      <p><i class="fas fa-code"></i> <span id="aboutLine1">To-Do List v1.0</span></p>
+      <p><i class="fas fa-user-check"></i> <span id="aboutLine2">Built with HTML, CSS, JS</span></p>
+      <p><i class="fas fa-heart" style="color: #c44a6b;"></i> <span id="aboutLine3">Designed for simplicity</span></p>
+      <button class="back-home" id="aboutBackHome">← <span id="aboutHomeBtn">Back to tasks</span></button>
+    </div>
+  </div>
+
+  <!-- ========== MODAL (time picker) ========== -->
+  <div class="modal-overlay" id="timeModal">
+    <div class="modal-box">
+      <h3><i class="far fa-clock"></i> <span id="modalTitle">Pick date & time</span></h3>
+      <input type="datetime-local" id="datetimePicker" />
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modalCancel"><span id="modalCancelBtn">Cancel</span></button>
+        <button class="btn-ok" id="modalOk"><span id="modalOkBtn">OK</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== EMPTY TASK POPUP ========== -->
+  <div class="empty-popup-overlay" id="emptyPopup">
+    <div class="empty-popup">
+      <button class="close-popup" id="closeEmptyPopup"><i class="fas fa-times"></i></button>
+      <i class="fas fa-pen-fancy"></i>
+      <h3 id="emptyTitle">Write a task first</h3>
+      <p id="emptyDesc">Please type something in the input field before saving.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- STATE ----------
+    let tasks = [];
+    let selectedDateTime = null;
+    let currentLanguage = 'en';
+    let currentTheme = 'light';
+
+    // ---------- TRANSLATIONS ----------
+    const translations = {
+      'en': {
+        mainTitle: 'All Tasks',
+        menuSettings: 'Settings',
+        menuMore: 'More Features',
+        menuAbout: 'About App',
+        addBack: 'Back',
+        addTitle: 'Add Task',
+        addTaskLabel: 'Task description',
+        emojiHint: "Use your keyboard's emoji key 😊",
+        timeLabel: 'Set time & date',
+        chooseTime: 'Choose time',
+        noTimeSet: 'No time set',
+        saveBtnText: 'Save task',
+        settingsBack: 'Back',
+        settingsTitle: 'Settings',
+        langGroupTitle: 'Language',
+        langLabel: 'Select Language',
+        themeGroupTitle: 'Theme',
+        themeLabel: 'Appearance',
+        lightLabel: 'Light',
+        darkLabel: 'Dark',
+        settingsHomeBtn: 'Back to tasks',
+        moreBack: 'Back',
+        moreTitle: 'More',
+        moreFeature1: 'Categories (coming soon)',
+        moreFeature2: 'Statistics (coming soon)',
+        moreFeature3: 'Share tasks (coming soon)',
+        moreHomeBtn: 'Back to tasks',
+        aboutBack: 'Back',
+        aboutTitle: 'About',
+        aboutLine1: 'To-Do List v1.0',
+        aboutLine2: 'Built with HTML, CSS, JS',
+        aboutLine3: 'Designed for simplicity',
+        aboutHomeBtn: 'Back to tasks',
+        modalTitle: 'Pick date & time',
+        modalCancelBtn: 'Cancel',
+        modalOkBtn: 'OK',
+        emptyTitle: 'Write a task first',
+        emptyDesc: 'Please type something in the input field before saving.',
+        noTasks: 'No tasks yet.',
+        tapAdd: 'Tap + to add',
+        deleteConfirm: 'Delete this task?',
+        clearCompleted: 'Clear completed',
+        noCompleted: 'No completed tasks',
+      },
+      'en-uk': {
+        mainTitle: 'All Tasks',
+        menuSettings: 'Settings',
+        menuMore: 'More Features',
+        menuAbout: 'About App',
+        addBack: 'Back',
+        addTitle: 'Add Task',
+        addTaskLabel: 'Task description',
+        emojiHint: "Use your keyboard's emoji key 😊",
+        timeLabel: 'Set time & date',
+        chooseTime: 'Choose time',
+        noTimeSet: 'No time set',
+        saveBtnText: 'Save task',
+        settingsBack: 'Back',
+        settingsTitle: 'Settings',
+        langGroupTitle: 'Language',
+        langLabel: 'Select Language',
+        themeGroupTitle: 'Theme',
+        themeLabel: 'Appearance',
+        lightLabel: 'Light',
+        darkLabel: 'Dark',
+        settingsHomeBtn: 'Back to tasks',
+        moreBack: 'Back',
+        moreTitle: 'More',
+        moreFeature1: 'Categories (coming soon)',
+        moreFeature2: 'Statistics (coming soon)',
+        moreFeature3: 'Share tasks (coming soon)',
+        moreHomeBtn: 'Back to tasks',
+        aboutBack: 'Back',
+        aboutTitle: 'About',
+        aboutLine1: 'To-Do List v1.0',
+        aboutLine2: 'Built with HTML, CSS, JS',
+        aboutLine3: 'Designed for simplicity',
+        aboutHomeBtn: 'Back to tasks',
+        modalTitle: 'Pick date & time',
+        modalCancelBtn: 'Cancel',
+        modalOkBtn: 'OK',
+        emptyTitle: 'Write a task first',
+        emptyDesc: 'Please type something in the input field before saving.',
+        noTasks: 'No tasks yet.',
+        tapAdd: 'Tap + to add',
+        deleteConfirm: 'Delete this task?',
+        clearCompleted: 'Clear completed',
+        noCompleted: 'No completed tasks',
+      },
+      'bn': {
+        mainTitle: 'সমস্ত কাজ',
+        menuSettings: 'সেটিংস',
+        menuMore: 'আরও বৈশিষ্ট্য',
+        menuAbout: 'অ্যাপ সম্পর্কে',
+        addBack: 'পিছনে',
+        addTitle: 'কাজ যোগ করুন',
+        addTaskLabel: 'কাজের বিবরণ',
+        emojiHint: "আপনার কীবোর্ডের ইমোজি কী ব্যবহার করুন 😊",
+        timeLabel: 'সময় ও তারিখ নির্ধারণ করুন',
+        chooseTime: 'সময় নির্বাচন করুন',
+        noTimeSet: 'কোন সময় নির্ধারণ করা হয়নি',
+        saveBtnText: 'কাজ সংরক্ষণ করুন',
+        settingsBack: 'পিছনে',
+        settingsTitle: 'সেটিংস',
+        langGroupTitle: 'ভাষা',
+        langLabel: 'ভাষা নির্বাচন করুন',
+        themeGroupTitle: 'থিম',
+        themeLabel: 'আবির্ভাব',
+        lightLabel: 'হালকা',
+        darkLabel: 'গাঢ়',
+        settingsHomeBtn: 'কাজে ফিরে যান',
+        moreBack: 'পিছনে',
+        moreTitle: 'আরও',
+        moreFeature1: 'বিভাগ (শীঘ্রই আসছে)',
+        moreFeature2: 'পরিসংখ্যান (শীঘ্রই আসছে)',
+        moreFeature3: 'কাজ শেয়ার করুন (শীঘ্রই আসছে)',
+        moreHomeBtn: 'কাজে ফিরে যান',
+        aboutBack: 'পিছনে',
+        aboutTitle: 'সম্পর্কে',
+        aboutLine1: 'টু-ডু লিস্ট v1.0',
+        aboutLine2: 'HTML, CSS, JS দিয়ে তৈরি',
+        aboutLine3: 'সরলতার জন্য ডিজাইন করা হয়েছে',
+        aboutHomeBtn: 'কাজে ফিরে যান',
+        modalTitle: 'তারিখ ও সময় নির্বাচন করুন',
+        modalCancelBtn: 'বাতিল',
+        modalOkBtn: 'ঠিক আছে',
+        emptyTitle: 'প্রথমে একটি কাজ লিখুন',
+        emptyDesc: 'সংরক্ষণ করার আগে ইনপুট ফিল্ডে কিছু টাইপ করুন।',
+        noTasks: 'কোন কাজ নেই।',
+        tapAdd: 'যোগ করতে + ট্যাপ করুন',
+        deleteConfirm: 'এই কাজটি মুছবেন?',
+        clearCompleted: 'সমাপ্ত কাজ মুছুন',
+        noCompleted: 'কোন সমাপ্ত কাজ নেই',
+      },
+      'ar': {
+        mainTitle: 'جميع المهام',
+        menuSettings: 'الإعدادات',
+        menuMore: 'مزيد من الميزات',
+        menuAbout: 'حول التطبيق',
+        addBack: 'رجوع',
+        addTitle: 'إضافة مهمة',
+        addTaskLabel: 'وصف المهمة',
+        emojiHint: "استخدم مفتاح الرموز التعبيرية في لوحة المفاتيح 😊",
+        timeLabel: 'تعيين الوقت والتاريخ',
+        chooseTime: 'اختر الوقت',
+        noTimeSet: 'لم يتم تعيين وقت',
+        saveBtnText: 'حفظ المهمة',
+        settingsBack: 'رجوع',
+        settingsTitle: 'الإعدادات',
+        langGroupTitle: 'اللغة',
+        langLabel: 'اختر اللغة',
+        themeGroupTitle: 'السمة',
+        themeLabel: 'المظهر',
+        lightLabel: 'فاتح',
+        darkLabel: 'داكن',
+        settingsHomeBtn: 'العودة إلى المهام',
+        moreBack: 'رجوع',
+        moreTitle: 'المزيد',
+        moreFeature1: 'الفئات (قريباً)',
+        moreFeature2: 'الإحصائيات (قريباً)',
+        moreFeature3: 'مشاركة المهام (قريباً)',
+        moreHomeBtn: 'العودة إلى المهام',
+        aboutBack: 'رجوع',
+        aboutTitle: 'حول',
+        aboutLine1: 'قائمة المهام v1.0',
+        aboutLine2: 'مصنوع بـ HTML, CSS, JS',
+        aboutLine3: 'مصمم للبساطة',
+        aboutHomeBtn: 'العودة إلى المهام',
+        modalTitle: 'اختر التاريخ والوقت',
+        modalCancelBtn: 'إلغاء',
+        modalOkBtn: 'موافق',
+        emptyTitle: 'اكتب مهمة أولاً',
+        emptyDesc: 'يرجى كتابة شيء في حقل الإدخال قبل الحفظ.',
+        noTasks: 'لا توجد مهام بعد.',
+        tapAdd: 'انقر + للإضافة',
+        deleteConfirm: 'حذف هذه المهمة؟',
+        clearCompleted: 'مسح المهام المكتملة',
+        noCompleted: 'لا توجد مهام مكتملة',
+      },
+      'zh': {
+        mainTitle: '所有任务',
+        menuSettings: '设置',
+        menuMore: '更多功能',
+        menuAbout: '关于应用',
+        addBack: '返回',
+        addTitle: '添加任务',
+        addTaskLabel: '任务描述',
+        emojiHint: "使用键盘的表情符号键 😊",
+        timeLabel: '设置时间和日期',
+        chooseTime: '选择时间',
+        noTimeSet: '未设置时间',
+        saveBtnText: '保存任务',
+        settingsBack: '返回',
+        settingsTitle: '设置',
+        langGroupTitle: '语言',
+        langLabel: '选择语言',
+        themeGroupTitle: '主题',
+        themeLabel: '外观',
+        lightLabel: '明亮',
+        darkLabel: '黑暗',
+        settingsHomeBtn: '返回任务',
+        moreBack: '返回',
+        moreTitle: '更多',
+        moreFeature1: '分类（即将推出）',
+        moreFeature2: '统计（即将推出）',
+        moreFeature3: '分享任务（即将推出）',
+        moreHomeBtn: '返回任务',
+        aboutBack: '返回',
+        aboutTitle: '关于',
+        aboutLine1: '待办事项列表 v1.0',
+        aboutLine2: '使用 HTML, CSS, JS 构建',
+        aboutLine3: '为简洁而设计',
+        aboutHomeBtn: '返回任务',
+        modalTitle: '选择日期和时间',
+        modalCancelBtn: '取消',
+        modalOkBtn: '确定',
+        emptyTitle: '请先写一个任务',
+        emptyDesc: '保存前请在输入框中输入内容。',
+        noTasks: '还没有任务。',
+        tapAdd: '点击 + 添加',
+        deleteConfirm: '删除此任务？',
+        clearCompleted: '清除已完成',
+        noCompleted: '没有已完成的任务',
+      },
+      'ko': {
+        mainTitle: '모든 작업',
+        menuSettings: '설정',
+        menuMore: '더 많은 기능',
+        menuAbout: '앱 정보',
+        addBack: '뒤로',
+        addTitle: '작업 추가',
+        addTaskLabel: '작업 설명',
+        emojiHint: "키보드의 이모지 키를 사용하세요 😊",
+        timeLabel: '시간 및 날짜 설정',
+        chooseTime: '시간 선택',
+        noTimeSet: '시간이 설정되지 않음',
+        saveBtnText: '작업 저장',
+        settingsBack: '뒤로',
+        settingsTitle: '설정',
+        langGroupTitle: '언어',
+        langLabel: '언어 선택',
+        themeGroupTitle: '테마',
+        themeLabel: '모양',
+        lightLabel: '라이트',
+        darkLabel: '다크',
+        settingsHomeBtn: '작업으로 돌아가기',
+        moreBack: '뒤로',
+        moreTitle: '더보기',
+        moreFeature1: '카테고리 (곧 제공)',
+        moreFeature2: '통계 (곧 제공)',
+        moreFeature3: '작업 공유 (곧 제공)',
+        moreHomeBtn: '작업으로 돌아가기',
+        aboutBack: '뒤로',
+        aboutTitle: '정보',
+        aboutLine1: '할 일 목록 v1.0',
+        aboutLine2: 'HTML, CSS, JS로 제작',
+        aboutLine3: '단순함을 위해 디자인됨',
+        aboutHomeBtn: '작업으로 돌아가기',
+        modalTitle: '날짜 및 시간 선택',
+        modalCancelBtn: '취소',
+        modalOkBtn: '확인',
+        emptyTitle: '먼저 작업을 작성하세요',
+        emptyDesc: '저장하기 전에 입력 필드에 내용을 입력하세요.',
+        noTasks: '아직 작업이 없습니다.',
+        tapAdd: '+를 탭하여 추가',
+        deleteConfirm: '이 작업을 삭제하시겠습니까?',
+        clearCompleted: '완료된 작업 지우기',
+        noCompleted: '완료된 작업이 없습니다',
+      }
+    };
+
+    // ---------- DOM REFS ----------
+    const pageMain = document.getElementById('pageMain');
+    const pageAdd = document.getElementById('pageAdd');
+    const pageSettings = document.getElementById('pageSettings');
+    const pageMore = document.getElementById('pageMore');
+    const pageAbout = document.getElementById('pageAbout');
+
+    const taskListEl = document.getElementById('taskList');
+    const taskInput = document.getElementById('taskInput');
+    const timePreview = document.getElementById('timePreview');
+    const fabAdd = document.getElementById('fabAdd');
+    const backFromAdd = document.getElementById('backFromAdd');
+    const saveTaskBtn = document.getElementById('saveTaskBtn');
+
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const moreFeaturesBtn = document.getElementById('moreFeaturesBtn');
+    const aboutBtn = document.getElementById('aboutBtn');
+
+    const timeModal = document.getElementById('timeModal');
+    const datetimePicker = document.getElementById('datetimePicker');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalOk = document.getElementById('modalOk');
+    const openTimePicker = document.getElementById('openTimePicker');
+
+    const emptyPopup = document.getElementById('emptyPopup');
+    const closeEmptyPopup = document.getElementById('closeEmptyPopup');
+
+    const settingsBackHome = document.getElementById('settingsBackHome');
+    const moreBackHome = document.getElementById('moreBackHome');
+    const aboutBackHome = document.getElementById('aboutBackHome');
+    const backFromSettings = document.getElementById('backFromSettings');
+    const backFromMore = document.getElementById('backFromMore');
+    const backFromAbout = document.getElementById('backFromAbout');
+
+    const languageSelect = document.getElementById('languageSelect');
+    const lightThemeBtn = document.getElementById('lightThemeBtn');
+    const darkThemeBtn = document.getElementById('darkThemeBtn');
+
+    // ---------- HELPERS ----------
+    function generateId() { return Date.now() + Math.random().toString(36).slice(2, 8); }
+
+    function formatDate(isoString) {
+      if (!isoString) return translations[currentLanguage].noTimeSet;
+      const d = new Date(isoString);
+      if (isNaN(d)) return 'Invalid date';
+      return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ---------- LANGUAGE & THEME ----------
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      const t = translations[lang] || translations['en'];
+      
+      document.getElementById('mainTitle').textContent = t.mainTitle;
+      document.getElementById('menuSettings').textContent = t.menuSettings;
+      document.getElementById('menuMore').textContent = t.menuMore;
+      document.getElementById('menuAbout').textContent = t.menuAbout;
+      document.getElementById('addBack').textContent = t.addBack;
+      document.getElementById('addTitle').textContent = t.addTitle;
+      document.getElementById('addTaskLabel').textContent = t.addTaskLabel;
+      document.getElementById('emojiHint').textContent = t.emojiHint;
+      document.getElementById('timeLabel').textContent = t.timeLabel;
+      document.getElementById('chooseTime').textContent = t.chooseTime;
+      document.getElementById('noTimeSet').textContent = t.noTimeSet;
+      document.getElementById('saveBtnText').textContent = t.saveBtnText;
+      document.getElementById('settingsBack').textContent = t.settingsBack;
+      document.getElementById('settingsTitle').textContent = t.settingsTitle;
+      document.getElementById('langGroupTitle').textContent = t.langGroupTitle;
+      document.getElementById('langLabel').textContent = t.langLabel;
+      document.getElementById('themeGroupTitle').textContent = t.themeGroupTitle;
+      document.getElementById('themeLabel').textContent = t.themeLabel;
+      document.getElementById('lightLabel').textContent = t.lightLabel;
+      document.getElementById('darkLabel').textContent = t.darkLabel;
+      document.getElementById('settingsHomeBtn').textContent = t.settingsHomeBtn;
+      document.getElementById('moreBack').textContent = t.moreBack;
+      document.getElementById('moreTitle').textContent = t.moreTitle;
+      document.getElementById('moreFeature1').textContent = t.moreFeature1;
+      document.getElementById('moreFeature2').textContent = t.moreFeature2;
+      document.getElementById('moreFeature3').textContent = t.moreFeature3;
+      document.getElementById('moreHomeBtn').textContent = t.moreHomeBtn;
+      document.getElementById('aboutBack').textContent = t.aboutBack;
+      document.getElementById('aboutTitle').textContent = t.aboutTitle;
+      document.getElementById('aboutLine1').textContent = t.aboutLine1;
+      document.getElementById('aboutLine2').textContent = t.aboutLine2;
+      document.getElementById('aboutLine3').textContent = t.aboutLine3;
+      document.getElementById('aboutHomeBtn').textContent = t.aboutHomeBtn;
+      document.getElementById('modalTitle').textContent = t.modalTitle;
+      document.getElementById('modalCancelBtn').textContent = t.modalCancelBtn;
+      document.getElementById('modalOkBtn').textContent = t.modalOkBtn;
+      document.getElementById('emptyTitle').textContent = t.emptyTitle;
+      document.getElementById('emptyDesc').textContent = t.emptyDesc;
+      
+      // Update time preview if no time set
+      if (!selectedDateTime) {
+        document.getElementById('noTimeSet').textContent = t.noTimeSet;
+      }
+      
+      // Re-render tasks to update empty state
+      renderTasks();
+    }
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        lightThemeBtn.classList.remove('active');
+        darkThemeBtn.classList.add('active');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkThemeBtn.classList.remove('active');
+        lightThemeBtn.classList.add('active');
+      }
+    }
+
+    // ---------- RENDER ----------
+    function renderTasks() {
+      const t = translations[currentLanguage];
+      if (tasks.length === 0) {
+        taskListEl.innerHTML = `<li class="empty-state"><i class="fas fa-smile-wink"></i> ${t.noTasks}<br>${t.tapAdd}</li>`;
+        return;
+      }
+
+      let html = '';
+      tasks.slice().reverse().forEach(task => {
+        const checked = task.completed ? 'checked' : '';
+        const timeStr = task.time ? formatDate(task.time) : '';
+        html += `
+          <li data-id="${task.id}">
+            <div class="task-info">
+              <span class="task-title">${escapeHtml(task.text)}</span>
+              <span class="task-meta">
+                ${timeStr ? `<i class="far fa-clock"></i> ${timeStr}` : ''}
+              </span>
+            </div>
+            <div class="task-status">
+              <input type="checkbox" ${checked} class="task-check" data-id="${task.id}">
+              <button class="delete-task" data-id="${task.id}"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </li>
+        `;
+      });
+      taskListEl.innerHTML = html;
+
+      document.querySelectorAll('.task-check').forEach(cb => {
+        cb.addEventListener('change', function(e) {
+          const id = this.dataset.id;
+          const task = tasks.find(t => t.id === id);
+          if (task) {
+            task.completed = this.checked;
+            renderTasks();
+          }
+        });
+      });
+
+      document.querySelectorAll('.delete-task').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const id = this.dataset.id;
+          if (confirm(translations[currentLanguage].deleteConfirm)) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+          }
+        });
+      });
+    }
+
+    function escapeHtml(unsafe) {
+      return unsafe.replace(/[&<>"]/g, function(m) {
+        if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; if(m === '"') return '&quot;';
+        return m;
+      });
+    }
+
+    // ---------- NAVIGATION ----------
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      dropdownMenu.classList.remove('show');
+    }
+
+    function goHome() {
+      showPage('pageMain');
+      renderTasks();
+    }
+
+    // ---------- EMPTY POPUP ----------
+    function showEmptyPopup() {
+      emptyPopup.classList.add('show');
+    }
+
+    function hideEmptyPopup() {
+      emptyPopup.classList.remove('show');
+    }
+
+    emptyPopup.addEventListener('click', function(e) {
+      if (e.target === this) hideEmptyPopup();
+    });
+
+    closeEmptyPopup.addEventListener('click', hideEmptyPopup);
+
+    // ---------- ADD TASK ----------
+    function addTaskFromForm() {
+      const text = taskInput.value.trim();
+      if (!text) {
+        showEmptyPopup();
+        return;
+      }
+      const newTask = {
+        id: generateId(),
+        text: text,
+        completed: false,
+        time: selectedDateTime || null,
+      };
+      tasks.push(newTask);
+      taskInput.value = '';
+      selectedDateTime = null;
+      timePreview.textContent = translations[currentLanguage].noTimeSet;
+      datetimePicker.value = '';
+      goHome();
+    }
+
+    // ---------- MODAL (time picker) ----------
+    function openModal() {
+      timeModal.classList.add('show');
+      if (!datetimePicker.value) {
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+        const iso = now.toISOString().slice(0, 16);
+        datetimePicker.value = iso;
+      }
+    }
+
+    function closeModal() {
+      timeModal.classList.remove('show');
+    }
+
+    function confirmTime() {
+      const val = datetimePicker.value;
+      if (val) {
+        selectedDateTime = val;
+        timePreview.textContent = formatDate(val);
+      } else {
+        selectedDateTime = null;
+        timePreview.textContent = translations[currentLanguage].noTimeSet;
+      }
+      closeModal();
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    fabAdd.addEventListener('click', () => {
+      showPage('pageAdd');
+      setTimeout(() => taskInput.focus(), 100);
+    });
+
+    backFromAdd.addEventListener('click', goHome);
+
+    saveTaskBtn.addEventListener('click', addTaskFromForm);
+    taskInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addTaskFromForm();
+    });
+
+    openTimePicker.addEventListener('click', openModal);
+    modalCancel.addEventListener('click', closeModal);
+    modalOk.addEventListener('click', confirmTime);
+    timeModal.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // ---------- DROPDOWN ----------
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+    document.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
+    });
+
+    settingsBtn.addEventListener('click', () => { showPage('pageSettings'); });
+    moreFeaturesBtn.addEventListener('click', () => { showPage('pageMore'); });
+    aboutBtn.addEventListener('click', () => { showPage('pageAbout'); });
+
+    settingsBackHome.addEventListener('click', goHome);
+    moreBackHome.addEventListener('click', goHome);
+    aboutBackHome.addEventListener('click', goHome);
+    backFromSettings.addEventListener('click', goHome);
+    backFromMore.addEventListener('click', goHome);
+    backFromAbout.addEventListener('click', goHome);
+
+    // ---------- LANGUAGE SELECT ----------
+    languageSelect.addEventListener('change', function() {
+      applyLanguage(this.value);
+    });
+
+    // ---------- THEME TOGGLE ----------
+    lightThemeBtn.addEventListener('click', () => applyTheme('light'));
+    darkThemeBtn.addEventListener('click', () => applyTheme('dark'));
+
+    // ---------- INIT ----------
+    tasks = [];
+    applyLanguage('en');
+    applyTheme('light');
+    renderTasks();
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (timeModal.classList.contains('show')) closeModal();
+        if (emptyPopup.classList.contains('show')) hideEmptyPopup();
+        dropdownMenu.classList.remove('show');
+      }
+    });
+
+  })();
+</script>
+</body>
+</html>
