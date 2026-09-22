@@ -1049,8 +1049,12 @@
   </div>
 </div>
 
-<script>
+      <script>
   (function() {
+    // ---------- STORAGE KEY ----------
+    const STORAGE_KEY = 'todo_app_tasks_v1';
+    const SETTINGS_KEY = 'todo_app_settings_v1';
+
     // ---------- STATE ----------
     let tasks = [];
     let selectedDateTime = null;
@@ -1060,274 +1064,164 @@
     // ---------- TRANSLATIONS ----------
     const translations = {
       'en': {
-        mainTitle: 'All Tasks',
-        menuSettings: 'Settings',
-        menuMore: 'More Features',
-        menuAbout: 'About App',
-        addBack: 'Back',
-        addTitle: 'Add Task',
+        mainTitle: 'All Tasks', menuSettings: 'Settings', menuMore: 'More Features',
+        menuAbout: 'About App', addBack: 'Back', addTitle: 'Add Task',
         addTaskLabel: 'Task description',
         emojiHint: "Use your keyboard's emoji key 😊",
-        timeLabel: 'Set time & date',
-        chooseTime: 'Choose time',
-        noTimeSet: 'No time set',
-        saveBtnText: 'Save task',
-        settingsBack: 'Back',
-        settingsTitle: 'Settings',
-        langGroupTitle: 'Language',
-        langLabel: 'Select Language',
-        themeGroupTitle: 'Theme',
-        themeLabel: 'Appearance',
-        lightLabel: 'Light',
-        darkLabel: 'Dark',
-        settingsHomeBtn: 'Back to tasks',
-        moreBack: 'Back',
-        moreTitle: 'More',
+        timeLabel: 'Set time & date', chooseTime: 'Choose time',
+        noTimeSet: 'No time set', saveBtnText: 'Save task',
+        settingsBack: 'Back', settingsTitle: 'Settings',
+        langGroupTitle: 'Language', langLabel: 'Select Language',
+        themeGroupTitle: 'Theme', themeLabel: 'Appearance',
+        lightLabel: 'Light', darkLabel: 'Dark',
+        settingsHomeBtn: 'Back to tasks', moreBack: 'Back', moreTitle: 'More',
         moreFeature1: 'Categories (coming soon)',
         moreFeature2: 'Statistics (coming soon)',
         moreFeature3: 'Share tasks (coming soon)',
-        moreHomeBtn: 'Back to tasks',
-        aboutBack: 'Back',
-        aboutTitle: 'About',
+        moreHomeBtn: 'Back to tasks', aboutBack: 'Back', aboutTitle: 'About',
         aboutLine1: 'To-Do List v1.0',
         aboutLine2: 'Built with HTML, CSS, JS',
         aboutLine3: 'Designed for simplicity',
-        aboutHomeBtn: 'Back to tasks',
-        modalTitle: 'Pick date & time',
-        modalCancelBtn: 'Cancel',
-        modalOkBtn: 'OK',
+        aboutHomeBtn: 'Back to tasks', modalTitle: 'Pick date & time',
+        modalCancelBtn: 'Cancel', modalOkBtn: 'OK',
         emptyTitle: 'Write a task first',
         emptyDesc: 'Please type something in the input field before saving.',
-        noTasks: 'No tasks yet.',
-        tapAdd: 'Tap + to add',
+        noTasks: 'No tasks yet.', tapAdd: 'Tap + to add',
         deleteConfirm: 'Delete this task?',
-        clearCompleted: 'Clear completed',
-        noCompleted: 'No completed tasks',
       },
       'en-uk': {
-        mainTitle: 'All Tasks',
-        menuSettings: 'Settings',
-        menuMore: 'More Features',
-        menuAbout: 'About App',
-        addBack: 'Back',
-        addTitle: 'Add Task',
+        mainTitle: 'All Tasks', menuSettings: 'Settings', menuMore: 'More Features',
+        menuAbout: 'About App', addBack: 'Back', addTitle: 'Add Task',
         addTaskLabel: 'Task description',
         emojiHint: "Use your keyboard's emoji key 😊",
-        timeLabel: 'Set time & date',
-        chooseTime: 'Choose time',
-        noTimeSet: 'No time set',
-        saveBtnText: 'Save task',
-        settingsBack: 'Back',
-        settingsTitle: 'Settings',
-        langGroupTitle: 'Language',
-        langLabel: 'Select Language',
-        themeGroupTitle: 'Theme',
-        themeLabel: 'Appearance',
-        lightLabel: 'Light',
-        darkLabel: 'Dark',
-        settingsHomeBtn: 'Back to tasks',
-        moreBack: 'Back',
-        moreTitle: 'More',
+        timeLabel: 'Set time & date', chooseTime: 'Choose time',
+        noTimeSet: 'No time set', saveBtnText: 'Save task',
+        settingsBack: 'Back', settingsTitle: 'Settings',
+        langGroupTitle: 'Language', langLabel: 'Select Language',
+        themeGroupTitle: 'Theme', themeLabel: 'Appearance',
+        lightLabel: 'Light', darkLabel: 'Dark',
+        settingsHomeBtn: 'Back to tasks', moreBack: 'Back', moreTitle: 'More',
         moreFeature1: 'Categories (coming soon)',
         moreFeature2: 'Statistics (coming soon)',
         moreFeature3: 'Share tasks (coming soon)',
-        moreHomeBtn: 'Back to tasks',
-        aboutBack: 'Back',
-        aboutTitle: 'About',
+        moreHomeBtn: 'Back to tasks', aboutBack: 'Back', aboutTitle: 'About',
         aboutLine1: 'To-Do List v1.0',
         aboutLine2: 'Built with HTML, CSS, JS',
         aboutLine3: 'Designed for simplicity',
-        aboutHomeBtn: 'Back to tasks',
-        modalTitle: 'Pick date & time',
-        modalCancelBtn: 'Cancel',
-        modalOkBtn: 'OK',
+        aboutHomeBtn: 'Back to tasks', modalTitle: 'Pick date & time',
+        modalCancelBtn: 'Cancel', modalOkBtn: 'OK',
         emptyTitle: 'Write a task first',
         emptyDesc: 'Please type something in the input field before saving.',
-        noTasks: 'No tasks yet.',
-        tapAdd: 'Tap + to add',
+        noTasks: 'No tasks yet.', tapAdd: 'Tap + to add',
         deleteConfirm: 'Delete this task?',
-        clearCompleted: 'Clear completed',
-        noCompleted: 'No completed tasks',
       },
       'bn': {
-        mainTitle: 'সমস্ত কাজ',
-        menuSettings: 'সেটিংস',
-        menuMore: 'আরও বৈশিষ্ট্য',
-        menuAbout: 'অ্যাপ সম্পর্কে',
-        addBack: 'পিছনে',
-        addTitle: 'কাজ যোগ করুন',
+        mainTitle: 'সমস্ত কাজ', menuSettings: 'সেটিংস', menuMore: 'আরও বৈশিষ্ট্য',
+        menuAbout: 'অ্যাপ সম্পর্কে', addBack: 'পিছনে', addTitle: 'কাজ যোগ করুন',
         addTaskLabel: 'কাজের বিবরণ',
         emojiHint: "আপনার কীবোর্ডের ইমোজি কী ব্যবহার করুন 😊",
-        timeLabel: 'সময় ও তারিখ নির্ধারণ করুন',
-        chooseTime: 'সময় নির্বাচন করুন',
-        noTimeSet: 'কোন সময় নির্ধারণ করা হয়নি',
-        saveBtnText: 'কাজ সংরক্ষণ করুন',
-        settingsBack: 'পিছনে',
-        settingsTitle: 'সেটিংস',
-        langGroupTitle: 'ভাষা',
-        langLabel: 'ভাষা নির্বাচন করুন',
-        themeGroupTitle: 'থিম',
-        themeLabel: 'আবির্ভাব',
-        lightLabel: 'হালকা',
-        darkLabel: 'গাঢ়',
-        settingsHomeBtn: 'কাজে ফিরে যান',
-        moreBack: 'পিছনে',
-        moreTitle: 'আরও',
+        timeLabel: 'সময় ও তারিখ নির্ধারণ করুন', chooseTime: 'সময় নির্বাচন করুন',
+        noTimeSet: 'কোন সময় নির্ধারণ করা হয়নি', saveBtnText: 'কাজ সংরক্ষণ করুন',
+        settingsBack: 'পিছনে', settingsTitle: 'সেটিংস',
+        langGroupTitle: 'ভাষা', langLabel: 'ভাষা নির্বাচন করুন',
+        themeGroupTitle: 'থিম', themeLabel: 'আবির্ভাব',
+        lightLabel: 'হালকা', darkLabel: 'গাঢ়',
+        settingsHomeBtn: 'কাজে ফিরে যান', moreBack: 'পিছনে', moreTitle: 'আরও',
         moreFeature1: 'বিভাগ (শীঘ্রই আসছে)',
         moreFeature2: 'পরিসংখ্যান (শীঘ্রই আসছে)',
         moreFeature3: 'কাজ শেয়ার করুন (শীঘ্রই আসছে)',
-        moreHomeBtn: 'কাজে ফিরে যান',
-        aboutBack: 'পিছনে',
-        aboutTitle: 'সম্পর্কে',
+        moreHomeBtn: 'কাজে ফিরে যান', aboutBack: 'পিছনে', aboutTitle: 'সম্পর্কে',
         aboutLine1: 'টু-ডু লিস্ট v1.0',
         aboutLine2: 'HTML, CSS, JS দিয়ে তৈরি',
         aboutLine3: 'সরলতার জন্য ডিজাইন করা হয়েছে',
         aboutHomeBtn: 'কাজে ফিরে যান',
         modalTitle: 'তারিখ ও সময় নির্বাচন করুন',
-        modalCancelBtn: 'বাতিল',
-        modalOkBtn: 'ঠিক আছে',
+        modalCancelBtn: 'বাতিল', modalOkBtn: 'ঠিক আছে',
         emptyTitle: 'প্রথমে একটি কাজ লিখুন',
         emptyDesc: 'সংরক্ষণ করার আগে ইনপুট ফিল্ডে কিছু টাইপ করুন।',
-        noTasks: 'কোন কাজ নেই।',
-        tapAdd: 'যোগ করতে + ট্যাপ করুন',
+        noTasks: 'কোন কাজ নেই।', tapAdd: 'যোগ করতে + ট্যাপ করুন',
         deleteConfirm: 'এই কাজটি মুছবেন?',
-        clearCompleted: 'সমাপ্ত কাজ মুছুন',
-        noCompleted: 'কোন সমাপ্ত কাজ নেই',
       },
       'ar': {
-        mainTitle: 'جميع المهام',
-        menuSettings: 'الإعدادات',
-        menuMore: 'مزيد من الميزات',
-        menuAbout: 'حول التطبيق',
-        addBack: 'رجوع',
-        addTitle: 'إضافة مهمة',
+        mainTitle: 'جميع المهام', menuSettings: 'الإعدادات', menuMore: 'مزيد من الميزات',
+        menuAbout: 'حول التطبيق', addBack: 'رجوع', addTitle: 'إضافة مهمة',
         addTaskLabel: 'وصف المهمة',
         emojiHint: "استخدم مفتاح الرموز التعبيرية في لوحة المفاتيح 😊",
-        timeLabel: 'تعيين الوقت والتاريخ',
-        chooseTime: 'اختر الوقت',
-        noTimeSet: 'لم يتم تعيين وقت',
-        saveBtnText: 'حفظ المهمة',
-        settingsBack: 'رجوع',
-        settingsTitle: 'الإعدادات',
-        langGroupTitle: 'اللغة',
-        langLabel: 'اختر اللغة',
-        themeGroupTitle: 'السمة',
-        themeLabel: 'المظهر',
-        lightLabel: 'فاتح',
-        darkLabel: 'داكن',
-        settingsHomeBtn: 'العودة إلى المهام',
-        moreBack: 'رجوع',
-        moreTitle: 'المزيد',
+        timeLabel: 'تعيين الوقت والتاريخ', chooseTime: 'اختر الوقت',
+        noTimeSet: 'لم يتم تعيين وقت', saveBtnText: 'حفظ المهمة',
+        settingsBack: 'رجوع', settingsTitle: 'الإعدادات',
+        langGroupTitle: 'اللغة', langLabel: 'اختر اللغة',
+        themeGroupTitle: 'السمة', themeLabel: 'المظهر',
+        lightLabel: 'فاتح', darkLabel: 'داكن',
+        settingsHomeBtn: 'العودة إلى المهام', moreBack: 'رجوع', moreTitle: 'المزيد',
         moreFeature1: 'الفئات (قريباً)',
         moreFeature2: 'الإحصائيات (قريباً)',
         moreFeature3: 'مشاركة المهام (قريباً)',
-        moreHomeBtn: 'العودة إلى المهام',
-        aboutBack: 'رجوع',
-        aboutTitle: 'حول',
+        moreHomeBtn: 'العودة إلى المهام', aboutBack: 'رجوع', aboutTitle: 'حول',
         aboutLine1: 'قائمة المهام v1.0',
         aboutLine2: 'مصنوع بـ HTML, CSS, JS',
         aboutLine3: 'مصمم للبساطة',
         aboutHomeBtn: 'العودة إلى المهام',
         modalTitle: 'اختر التاريخ والوقت',
-        modalCancelBtn: 'إلغاء',
-        modalOkBtn: 'موافق',
+        modalCancelBtn: 'إلغاء', modalOkBtn: 'موافق',
         emptyTitle: 'اكتب مهمة أولاً',
         emptyDesc: 'يرجى كتابة شيء في حقل الإدخال قبل الحفظ.',
-        noTasks: 'لا توجد مهام بعد.',
-        tapAdd: 'انقر + للإضافة',
+        noTasks: 'لا توجد مهام بعد.', tapAdd: 'انقر + للإضافة',
         deleteConfirm: 'حذف هذه المهمة؟',
-        clearCompleted: 'مسح المهام المكتملة',
-        noCompleted: 'لا توجد مهام مكتملة',
       },
       'zh': {
-        mainTitle: '所有任务',
-        menuSettings: '设置',
-        menuMore: '更多功能',
-        menuAbout: '关于应用',
-        addBack: '返回',
-        addTitle: '添加任务',
+        mainTitle: '所有任务', menuSettings: '设置', menuMore: '更多功能',
+        menuAbout: '关于应用', addBack: '返回', addTitle: '添加任务',
         addTaskLabel: '任务描述',
         emojiHint: "使用键盘的表情符号键 😊",
-        timeLabel: '设置时间和日期',
-        chooseTime: '选择时间',
-        noTimeSet: '未设置时间',
-        saveBtnText: '保存任务',
-        settingsBack: '返回',
-        settingsTitle: '设置',
-        langGroupTitle: '语言',
-        langLabel: '选择语言',
-        themeGroupTitle: '主题',
-        themeLabel: '外观',
-        lightLabel: '明亮',
-        darkLabel: '黑暗',
-        settingsHomeBtn: '返回任务',
-        moreBack: '返回',
-        moreTitle: '更多',
+        timeLabel: '设置时间和日期', chooseTime: '选择时间',
+        noTimeSet: '未设置时间', saveBtnText: '保存任务',
+        settingsBack: '返回', settingsTitle: '设置',
+        langGroupTitle: '语言', langLabel: '选择语言',
+        themeGroupTitle: '主题', themeLabel: '外观',
+        lightLabel: '明亮', darkLabel: '黑暗',
+        settingsHomeBtn: '返回任务', moreBack: '返回', moreTitle: '更多',
         moreFeature1: '分类（即将推出）',
         moreFeature2: '统计（即将推出）',
         moreFeature3: '分享任务（即将推出）',
-        moreHomeBtn: '返回任务',
-        aboutBack: '返回',
-        aboutTitle: '关于',
+        moreHomeBtn: '返回任务', aboutBack: '返回', aboutTitle: '关于',
         aboutLine1: '待办事项列表 v1.0',
         aboutLine2: '使用 HTML, CSS, JS 构建',
         aboutLine3: '为简洁而设计',
         aboutHomeBtn: '返回任务',
         modalTitle: '选择日期和时间',
-        modalCancelBtn: '取消',
-        modalOkBtn: '确定',
+        modalCancelBtn: '取消', modalOkBtn: '确定',
         emptyTitle: '请先写一个任务',
         emptyDesc: '保存前请在输入框中输入内容。',
-        noTasks: '还没有任务。',
-        tapAdd: '点击 + 添加',
+        noTasks: '还没有任务。', tapAdd: '点击 + 添加',
         deleteConfirm: '删除此任务？',
-        clearCompleted: '清除已完成',
-        noCompleted: '没有已完成的任务',
       },
       'ko': {
-        mainTitle: '모든 작업',
-        menuSettings: '설정',
-        menuMore: '더 많은 기능',
-        menuAbout: '앱 정보',
-        addBack: '뒤로',
-        addTitle: '작업 추가',
+        mainTitle: '모든 작업', menuSettings: '설정', menuMore: '더 많은 기능',
+        menuAbout: '앱 정보', addBack: '뒤로', addTitle: '작업 추가',
         addTaskLabel: '작업 설명',
         emojiHint: "키보드의 이모지 키를 사용하세요 😊",
-        timeLabel: '시간 및 날짜 설정',
-        chooseTime: '시간 선택',
-        noTimeSet: '시간이 설정되지 않음',
-        saveBtnText: '작업 저장',
-        settingsBack: '뒤로',
-        settingsTitle: '설정',
-        langGroupTitle: '언어',
-        langLabel: '언어 선택',
-        themeGroupTitle: '테마',
-        themeLabel: '모양',
-        lightLabel: '라이트',
-        darkLabel: '다크',
-        settingsHomeBtn: '작업으로 돌아가기',
-        moreBack: '뒤로',
-        moreTitle: '더보기',
+        timeLabel: '시간 및 날짜 설정', chooseTime: '시간 선택',
+        noTimeSet: '시간이 설정되지 않음', saveBtnText: '작업 저장',
+        settingsBack: '뒤로', settingsTitle: '설정',
+        langGroupTitle: '언어', langLabel: '언어 선택',
+        themeGroupTitle: '테마', themeLabel: '모양',
+        lightLabel: '라이트', darkLabel: '다크',
+        settingsHomeBtn: '작업으로 돌아가기', moreBack: '뒤로', moreTitle: '더보기',
         moreFeature1: '카테고리 (곧 제공)',
         moreFeature2: '통계 (곧 제공)',
         moreFeature3: '작업 공유 (곧 제공)',
-        moreHomeBtn: '작업으로 돌아가기',
-        aboutBack: '뒤로',
-        aboutTitle: '정보',
+        moreHomeBtn: '작업으로 돌아가기', aboutBack: '뒤로', aboutTitle: '정보',
         aboutLine1: '할 일 목록 v1.0',
         aboutLine2: 'HTML, CSS, JS로 제작',
         aboutLine3: '단순함을 위해 디자인됨',
         aboutHomeBtn: '작업으로 돌아가기',
         modalTitle: '날짜 및 시간 선택',
-        modalCancelBtn: '취소',
-        modalOkBtn: '확인',
+        modalCancelBtn: '취소', modalOkBtn: '확인',
         emptyTitle: '먼저 작업을 작성하세요',
         emptyDesc: '저장하기 전에 입력 필드에 내용을 입력하세요.',
-        noTasks: '아직 작업이 없습니다.',
-        tapAdd: '+를 탭하여 추가',
+        noTasks: '아직 작업이 없습니다.', tapAdd: '+를 탭하여 추가',
         deleteConfirm: '이 작업을 삭제하시겠습니까?',
-        clearCompleted: '완료된 작업 지우기',
-        noCompleted: '완료된 작업이 없습니다',
       }
     };
 
@@ -1381,11 +1275,49 @@
       return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
+    // ---------- 💾 LOCAL STORAGE ----------
+    function saveTasks() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      } catch (e) {
+        console.warn('Tasks save করা যায়নি:', e);
+      }
+    }
+
+    function loadTasks() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) { tasks = []; return; }
+        const parsed = JSON.parse(raw);
+        tasks = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.warn('Tasks load করা যায়নি:', e);
+        tasks = [];
+      }
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+          language: currentLanguage,
+          theme: currentTheme
+        }));
+      } catch (e) {}
+    }
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) { return null; }
+    }
+
     // ---------- LANGUAGE & THEME ----------
     function applyLanguage(lang) {
       currentLanguage = lang;
       const t = translations[lang] || translations['en'];
-      
+
       document.getElementById('mainTitle').textContent = t.mainTitle;
       document.getElementById('menuSettings').textContent = t.menuSettings;
       document.getElementById('menuMore').textContent = t.menuMore;
@@ -1424,13 +1356,12 @@
       document.getElementById('modalOkBtn').textContent = t.modalOkBtn;
       document.getElementById('emptyTitle').textContent = t.emptyTitle;
       document.getElementById('emptyDesc').textContent = t.emptyDesc;
-      
-      // Update time preview if no time set
+
       if (!selectedDateTime) {
         document.getElementById('noTimeSet').textContent = t.noTimeSet;
       }
-      
-      // Re-render tasks to update empty state
+
+      languageSelect.value = lang;
       renderTasks();
     }
 
@@ -1477,11 +1408,12 @@
       taskListEl.innerHTML = html;
 
       document.querySelectorAll('.task-check').forEach(cb => {
-        cb.addEventListener('change', function(e) {
+        cb.addEventListener('change', function() {
           const id = this.dataset.id;
           const task = tasks.find(t => t.id === id);
           if (task) {
             task.completed = this.checked;
+            saveTasks();          // ✅ save
             renderTasks();
           }
         });
@@ -1493,6 +1425,7 @@
           const id = this.dataset.id;
           if (confirm(translations[currentLanguage].deleteConfirm)) {
             tasks = tasks.filter(t => t.id !== id);
+            saveTasks();          // ✅ save
             renderTasks();
           }
         });
@@ -1501,7 +1434,10 @@
 
     function escapeHtml(unsafe) {
       return unsafe.replace(/[&<>"]/g, function(m) {
-        if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; if(m === '"') return '&quot;';
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        if(m === '"') return '&quot;';
         return m;
       });
     }
@@ -1519,18 +1455,12 @@
     }
 
     // ---------- EMPTY POPUP ----------
-    function showEmptyPopup() {
-      emptyPopup.classList.add('show');
-    }
-
-    function hideEmptyPopup() {
-      emptyPopup.classList.remove('show');
-    }
+    function showEmptyPopup() { emptyPopup.classList.add('show'); }
+    function hideEmptyPopup() { emptyPopup.classList.remove('show'); }
 
     emptyPopup.addEventListener('click', function(e) {
       if (e.target === this) hideEmptyPopup();
     });
-
     closeEmptyPopup.addEventListener('click', hideEmptyPopup);
 
     // ---------- ADD TASK ----------
@@ -1547,6 +1477,8 @@
         time: selectedDateTime || null,
       };
       tasks.push(newTask);
+      saveTasks();                // ✅ save
+
       taskInput.value = '';
       selectedDateTime = null;
       timePreview.textContent = translations[currentLanguage].noTimeSet;
@@ -1554,7 +1486,7 @@
       goHome();
     }
 
-    // ---------- MODAL (time picker) ----------
+    // ---------- MODAL ----------
     function openModal() {
       timeModal.classList.add('show');
       if (!datetimePicker.value) {
@@ -1564,10 +1496,7 @@
         datetimePicker.value = iso;
       }
     }
-
-    function closeModal() {
-      timeModal.classList.remove('show');
-    }
+    function closeModal() { timeModal.classList.remove('show'); }
 
     function confirmTime() {
       const val = datetimePicker.value;
@@ -1581,14 +1510,12 @@
       closeModal();
     }
 
-    // ---------- EVENT LISTENERS ----------
+    // ---------- EVENTS ----------
     fabAdd.addEventListener('click', () => {
       showPage('pageAdd');
       setTimeout(() => taskInput.focus(), 100);
     });
-
     backFromAdd.addEventListener('click', goHome);
-
     saveTaskBtn.addEventListener('click', addTaskFromForm);
     taskInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') addTaskFromForm();
@@ -1601,7 +1528,6 @@
       if (e.target === this) closeModal();
     });
 
-    // ---------- DROPDOWN ----------
     menuToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdownMenu.classList.toggle('show');
@@ -1610,9 +1536,9 @@
       dropdownMenu.classList.remove('show');
     });
 
-    settingsBtn.addEventListener('click', () => { showPage('pageSettings'); });
-    moreFeaturesBtn.addEventListener('click', () => { showPage('pageMore'); });
-    aboutBtn.addEventListener('click', () => { showPage('pageAbout'); });
+    settingsBtn.addEventListener('click', () => showPage('pageSettings'));
+    moreFeaturesBtn.addEventListener('click', () => showPage('pageMore'));
+    aboutBtn.addEventListener('click', () => showPage('pageAbout'));
 
     settingsBackHome.addEventListener('click', goHome);
     moreBackHome.addEventListener('click', goHome);
@@ -1621,19 +1547,19 @@
     backFromMore.addEventListener('click', goHome);
     backFromAbout.addEventListener('click', goHome);
 
-    // ---------- LANGUAGE SELECT ----------
     languageSelect.addEventListener('change', function() {
       applyLanguage(this.value);
+      saveSettings();             // ✅ save settings
     });
 
-    // ---------- THEME TOGGLE ----------
-    lightThemeBtn.addEventListener('click', () => applyTheme('light'));
-    darkThemeBtn.addEventListener('click', () => applyTheme('dark'));
+    lightThemeBtn.addEventListener('click', () => { applyTheme('light'); saveSettings(); });
+    darkThemeBtn.addEventListener('click', () => { applyTheme('dark'); saveSettings(); });
 
     // ---------- INIT ----------
-    tasks = [];
-    applyLanguage('en');
-    applyTheme('light');
+    loadTasks();                          // ✅ load tasks
+    const saved = loadSettings();         // ✅ load language + theme
+    applyLanguage(saved?.language || 'en');
+    applyTheme(saved?.theme || 'light');
     renderTasks();
 
     document.addEventListener('keydown', (e) => {
@@ -1645,6 +1571,7 @@
     });
 
   })();
-</script>
+      </script>
+    
 </body>
 </html>
